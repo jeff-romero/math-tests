@@ -8,3 +8,11 @@ body {
     min-height: 100vh;
 }
 
+.row {
+    display: flex;
+}
+
+.equation {
+    display: flex;
+    flex-direction: column;
+}
