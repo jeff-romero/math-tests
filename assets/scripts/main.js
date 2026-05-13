@@ -56,7 +56,7 @@ class Exam {
     static MAX_OPERAND = 12;
     static ADD = "+";
     static SUB = "-";
-    static MULT = "*";
+    static MULT = "×";
     static DIV = "/";
 
     constructor(min=Exam.MIN_OPERAND, max=Exam.MAX_OPERAND) {
@@ -95,7 +95,34 @@ class Exam {
             let row = document.createElement("div");
             row.className = "row";
 
-            
+            for (let c = 0; c < this.__equations[i].length; c++) {
+                let equation = document.createElement("div");
+                equation.className = "equation";
+
+                let numerator = document.createElement("span");
+                let denominatorWrapper = document.createElement("div");
+                denominatorWrapper.className = "denominatorWrapper";
+                let denominator = document.createElement("span");
+                let operator = document.createElement("span");
+                let hr = document.createElement("hr");
+                let answer = document.createElement("span");
+
+                let currentEq = this.__equations[i][c];
+                numerator.innerText = currentEq.numerator;
+                operator.innerText = currentEq.operator;
+                denominator.innerText = currentEq.denominator;
+                answer.innerText = currentEq.answer;
+
+                denominatorWrapper.appendChild(operator);
+                denominatorWrapper.appendChild(denominator);
+
+                equation.appendChild(numerator);
+                equation.appendChild(denominatorWrapper);
+                equation.appendChild(hr);
+                equation.appendChild(answer);
+
+                row.appendChild(equation);
+            }
 
             root.appendChild(row);
         }
@@ -103,3 +130,4 @@ class Exam {
 }
 
 let exam = new Exam();
+exam.draw();
