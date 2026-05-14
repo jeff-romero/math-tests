@@ -1,10 +1,11 @@
 
 class Equation {
-    constructor(numerator, denominator, operator) {
+    constructor(numerator, denominator, operator, playerAnswer=null) {
         this.__numerator = numerator;
         this.__denominator = denominator;
         this.__operator = operator;
         this.__answer = 0;
+        this.__playerAnswer = playerAnswer;
 
         this.calc();
     }
@@ -23,6 +24,14 @@ class Equation {
 
     get answer() {
         return this.__answer;
+    }
+
+    get playerAnswer() {
+        return this.__playerAnswer;
+    }
+
+    set playerAnswer(element=null) {
+        this.__playerAnswer = element;
     }
 
     calc() {
@@ -59,11 +68,42 @@ class Exam {
     static MULT = "×";
     static DIV = "/";
 
-    constructor(min=Exam.MIN_OPERAND, max=Exam.MAX_OPERAND) {
+    constructor(rows=Exam.MAX_ROWS, cols=Exam.MAX_COLS, min=Exam.MIN_OPERAND, max=Exam.MAX_OPERAND) {
+        this.__rows = rows;
+        this.__cols = cols;
+        this.__min = min;
+        this.__max = max;
+        this.__playerAnswers = [];
         this.__equations = [];
         this.__operators = [];
         this.__operators.push(Exam.MULT);
 
+        this.__showErrors = document.getElementById("showErrors");
+        this.__showErrors.addEventListener("change", () => {
+            if (this.__equations.length == 0) {
+                return;
+            }
+            for (let r = 0; r < this.__rows; r++) {
+                for (let c = 0; c < this.__cols; c++) {
+                    let currentEq = this.__equations[r][c];
+                    if (!currentEq || !currentEq.playerAnswer) {
+                        continue;
+                    }
+
+                    if (this.__showErrors.checked) {
+                        console.log(`current answer: ${currentEq.playerAnswer.value}`);
+                        if (currentEq.playerAnswer.value.length > 0 && currentEq.answer != currentEq.playerAnswer.value) {
+                            currentEq.playerAnswer.style.backgroundColor = "red";
+                        }
+                    }
+                    else {
+                        currentEq.playerAnswer.style.backgroundColor = "white";
+                    }
+                }
+            }
+        });
+
+        // initialize equations
         for (let r = 0; r < Exam.MAX_ROWS; r++) {
             let row = [];
 
@@ -74,11 +114,22 @@ class Exam {
 
             this.__equations.push(row);
         }
+
+        // initialize player answers
+        for (let r = 0; r < this.__rows; r++) {
+            let paRow = [];
+
+            for (let c = 0; c < this.__cols; c++) {
+                paRow.push(0);
+            }
+
+            this.__playerAnswers.push(paRow);
+        }
     }
 
     createEquation() {
-        let numerator = Math.floor((Math.random() * Exam.MAX_OPERAND) + Exam.MIN_OPERAND);
-        let denominator = Math.floor((Math.random() * Exam.MAX_OPERAND) + Exam.MIN_OPERAND);
+        let numerator = Math.floor((Math.random() * this.__max) + this.__min);
+        let denominator = Math.floor((Math.random() * this.__max) + this.__min);
         let operator = this.__operators[0];
 
         if (this.__operators.length > 1) {
@@ -105,13 +156,26 @@ class Exam {
                 let denominator = document.createElement("span");
                 let operator = document.createElement("span");
                 let hr = document.createElement("hr");
-                let answer = document.createElement("span");
+                let playerAnswer = document.createElement("input");
+                playerAnswer.className = "playerAnswer";
 
                 let currentEq = this.__equations[i][c];
+                currentEq.playerAnswer = playerAnswer;
+                playerAnswer.addEventListener("change", (e) => {
+                    if (this.__showErrors.checked) {
+                        if (e.target.value != currentEq.answer) {
+                            e.target.style.backgroundColor = "red";
+                        }
+                        else if (e.target.style.backgroundColor != "white") {
+                            e.target.style.backgroundColor = "white";
+                        }
+                        // currentEq.playerAnswer.value = e.target.value;
+                    }
+                });
+
                 numerator.innerText = currentEq.numerator;
                 operator.innerText = currentEq.operator;
                 denominator.innerText = currentEq.denominator;
-                answer.innerText = currentEq.answer;
 
                 denominatorWrapper.appendChild(operator);
                 denominatorWrapper.appendChild(denominator);
@@ -119,7 +183,7 @@ class Exam {
                 equation.appendChild(numerator);
                 equation.appendChild(denominatorWrapper);
                 equation.appendChild(hr);
-                equation.appendChild(answer);
+                equation.appendChild(playerAnswer);
 
                 row.appendChild(equation);
             }
