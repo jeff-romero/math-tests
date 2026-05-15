@@ -161,6 +161,16 @@ class Exam {
 
                 let currentEq = this.__equations[i][c];
                 currentEq.playerAnswer = playerAnswer;
+
+                playerAnswer.addEventListener("input", (e) => {
+                    // TODO: add support for negative numbers
+                    // if (e.target.value.at(0) == "-" && e.target.value.length == 1) {
+                    // }
+                    if (isNaN(e.target.value) || e.target.value.at(-1) == " ") {
+                        e.target.value = e.target.value.slice(0, -1);
+                    }
+                });
+
                 playerAnswer.addEventListener("change", (e) => {
                     if (this.__showErrors.checked) {
                         if (e.target.value != currentEq.answer) {
