@@ -4,21 +4,34 @@
     box-sizing: border-box;
 }
 
+* {
+    margin: 0;
+}
+
 body {
     min-height: 100vh;
     /* background-color: red; */
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: space-between;
+    /* align-items: center; */
     gap: 1vw;
+}
+
+#top {
+    display: flex;
+    justify-content: space-evenly;
+    /* background-color: yellow; */
 }
 
 .row {
     display: flex;
-    gap: 1vw;
+    /* gap: 1vw; */
     /* background-color: yellow; */
     justify-content: space-evenly;
     /* align-items: center; */
+    /* align-content: center; */
+    /* padding-inline: 1vw; */
 }
 
 .equation {
@@ -26,14 +39,28 @@ body {
     flex-direction: column;
     align-items: flex-end;
     width: 4vw;
+    /* gap: 0.2vw; */
 }
 
 .denominatorWrapper {
     display: flex;
     width: 100%;
     justify-content: space-between;
+    /* background-color: aqua; */
+}
+
+.playerAnswer {
+    display: flex;
+    width: 100%;
+    border: 0.1vw dashed;
+    border-top: none;
+    text-align: end;
 }
 
 hr {
     width: 100%;
+}
+
+#score {
+    border-bottom: 0.1vw solid;
 }
