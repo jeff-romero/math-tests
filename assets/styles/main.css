@@ -21,7 +21,35 @@ body {
 #top {
     display: flex;
     justify-content: space-evenly;
-    /* background-color: yellow; */
+    background-color: rgb(95, 95, 95);
+    padding: 0.5vw;
+    color: white;
+    align-items: center;
+}
+
+#submit {
+    border: none;
+    background-color: rgb(133, 133, 133);
+    color: white;
+    padding: 0.5vw;
+}
+
+#scoreWrapper {
+    display: flex;
+    /* width: 6rem; */
+    /* background-color: blue; */
+    justify-content: center;
+    gap: 0.25vw;
+}
+
+.scoreNum {
+    width: 2.5rem;
+    /* background-color: grey; */
+    text-align: center;
+}
+
+#score {
+    border-bottom: 0.1vw solid;
 }
 
 .row {
@@ -59,8 +87,4 @@ body {
 
 hr {
     width: 100%;
-}
-
-#score {
-    border-bottom: 0.1vw solid;
 }
