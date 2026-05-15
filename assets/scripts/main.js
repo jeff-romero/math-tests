@@ -83,6 +83,7 @@ class Exam {
             if (this.__equations.length == 0) {
                 return;
             }
+
             for (let r = 0; r < this.__rows; r++) {
                 for (let c = 0; c < this.__cols; c++) {
                     let currentEq = this.__equations[r][c];
@@ -91,7 +92,6 @@ class Exam {
                     }
 
                     if (this.__showErrors.checked) {
-                        console.log(`current answer: ${currentEq.playerAnswer.value}`);
                         if (currentEq.playerAnswer.value.length > 0 && currentEq.answer != currentEq.playerAnswer.value) {
                             currentEq.playerAnswer.style.backgroundColor = "red";
                         }
@@ -169,7 +169,6 @@ class Exam {
                         else if (e.target.style.backgroundColor != "white") {
                             e.target.style.backgroundColor = "white";
                         }
-                        // currentEq.playerAnswer.value = e.target.value;
                     }
                 });
 
@@ -193,5 +192,42 @@ class Exam {
     }
 }
 
+
+class Submit {
+    static ID = "submit";
+    static DEF_CL = "rgb(133, 133, 133)";
+    static HOVER_CL = "rgb(150, 150, 150)";
+    static CLICK_CL = "rgb(167, 167, 167)";
+
+    constructor(id=Submit.ID) {
+        this.__button = document.getElementById(id);
+
+        this.__button.addEventListener("mouseover", (e) => {
+            e.target.style.backgroundColor = Submit.HOVER_CL;
+        });
+
+        this.__button.addEventListener("mouseleave", (e) => {
+            e.target.style.backgroundColor = Submit.DEF_CL;
+        });
+
+        this.__button.addEventListener("mousedown", (e) => {
+            e.target.style.backgroundColor = Submit.CLICK_CL;
+
+            // calculate total score
+        });
+
+        this.__button.addEventListener("mouseup", (e) => {
+            e.target.style.backgroundColor = Submit.HOVER_CL;
+        });
+    }
+
+    get button() {
+        return this.__button;
+    }
+}
+
+
 let exam = new Exam();
 exam.draw();
+
+let submit = new Submit();
