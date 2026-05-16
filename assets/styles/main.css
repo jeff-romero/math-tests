@@ -16,21 +16,22 @@ body {
     justify-content: space-between;
     /* align-items: center; */
     gap: 1vw;
+    flex: 1 1 0;
 }
 
 #top {
     display: flex;
     justify-content: space-evenly;
-    background-color: rgb(95, 95, 95);
+    background-color: rgb(204, 204, 204);
     padding: 0.5vw;
-    color: white;
+    /* color: white; */
     align-items: center;
 }
 
 #submit {
     border: none;
-    background-color: rgb(133, 133, 133);
-    color: white;
+    background-color: rgb(170, 170, 170);
+    /* color: white; */
     padding: 0.5vw;
 }
 
@@ -60,6 +61,7 @@ body {
     /* align-items: center; */
     /* align-content: center; */
     /* padding-inline: 1vw; */
+    flex: 1 1 0;
 }
 
 .equation {

@@ -205,9 +205,9 @@ class Exam {
 
 class Submit {
     static ID = "submit";
-    static DEF_CL = "rgb(133, 133, 133)";
+    static DEF_CL = "rgb(170, 170, 170)";
     static HOVER_CL = "rgb(150, 150, 150)";
-    static CLICK_CL = "rgb(167, 167, 167)";
+    static CLICK_CL = "rgb(130, 130, 130)";
 
     constructor(id=Submit.ID) {
         this.__button = document.getElementById(id);
