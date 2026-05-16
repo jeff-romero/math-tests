@@ -77,8 +77,26 @@ class Exam {
         this.__equations = [];
         this.__operators = [];
         this.__operators.push(Exam.MULT);
+        this.__showErrors = null;
 
+        this.updateTotalEquationCount();
+
+        this.createShowErrorHandler();
+
+        this.initializeEquations();
+
+        this.initializePlayerAnswers();
+
+        this.draw();
+    }
+
+    updateTotalEquationCount() {
+        document.getElementById("total").innerText = this.__rows * this.__cols;
+    }
+
+    createShowErrorHandler() {
         this.__showErrors = document.getElementById("showErrors");
+
         this.__showErrors.addEventListener("change", () => {
             if (this.__equations.length == 0) {
                 return;
@@ -102,8 +120,9 @@ class Exam {
                 }
             }
         });
+    }
 
-        // initialize equations
+    initializeEquations() {
         for (let r = 0; r < Exam.MAX_ROWS; r++) {
             let row = [];
 
@@ -113,17 +132,6 @@ class Exam {
             }
 
             this.__equations.push(row);
-        }
-
-        // initialize player answers
-        for (let r = 0; r < this.__rows; r++) {
-            let paRow = [];
-
-            for (let c = 0; c < this.__cols; c++) {
-                paRow.push(0);
-            }
-
-            this.__playerAnswers.push(paRow);
         }
     }
 
@@ -137,6 +145,18 @@ class Exam {
         }
 
         return new Equation(numerator, denominator, operator);
+    }
+
+    initializePlayerAnswers() {
+        for (let r = 0; r < this.__rows; r++) {
+            let paRow = [];
+
+            for (let c = 0; c < this.__cols; c++) {
+                paRow.push(0);
+            }
+
+            this.__playerAnswers.push(paRow);
+        }
     }
 
     draw() {
@@ -246,6 +266,5 @@ class Submit {
 
 
 let exam = new Exam();
-exam.draw();
 
 let submit = new Submit();
