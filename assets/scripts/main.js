@@ -229,6 +229,14 @@ class Submit {
         this.__button.addEventListener("mouseup", (e) => {
             e.target.style.backgroundColor = Submit.HOVER_CL;
         });
+
+        this.__button.addEventListener("touchstart", (e) => {
+            e.target.style.backgroundColor = Submit.CLICK_CL;
+        });
+
+        this.__button.addEventListener("touchend", (e) => {
+            e.target.style.backgroundColor = Submit.DEF_CL;
+        });
     }
 
     get button() {
