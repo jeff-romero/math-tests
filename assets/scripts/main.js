@@ -257,8 +257,15 @@ class Submit {
                 }
 
                 let correctAnswers = 0;
-                for (let i = 0; i < equations.length; i++) {
-
+                for (let r = 0; r < equations.length; r++) {
+                    for (let c = 0; c < equations[r].length; c++) {
+                        if (equations[r][c].answer == equations[r][c].playerAnswer.value) {
+                            correctAnswers++;
+                        }
+                        else {
+                            equations[r][c].playerAnswer.style.backgroundColor = "red";
+                        }
+                    }
                 }
 
                 document.getElementById("score").innerText = correctAnswers;
