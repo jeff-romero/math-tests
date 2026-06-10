@@ -113,10 +113,8 @@ class Exam {
                         continue;
                     }
 
-                    if (this.__showErrors.checked) {
-                        if (currentEq.playerAnswer.value.length > 0 && currentEq.answer != currentEq.playerAnswer.value) {
-                            currentEq.playerAnswer.style.backgroundColor = "red";
-                        }
+                    if (this.__showErrors.checked && currentEq.playerAnswer.value.length > 0 && currentEq.answer != currentEq.playerAnswer.value) {
+                        currentEq.playerAnswer.style.backgroundColor = "red";
                     }
                     else {
                         currentEq.playerAnswer.style.backgroundColor = "white";
@@ -186,7 +184,7 @@ class Exam {
                 let currentEq = this.__equations[i][c];
                 currentEq.playerAnswer = playerAnswer;
 
-                const re = /^(?![A-Za-z]|\s)+(-?[0-9]*)(.[0-9]*)?$/;
+                const re = /^(?=[-0-9.])+(-?[0-9]*)(.[0-9]*)?$/;
 
                 playerAnswer.addEventListener("input", (e) => {
                     if (re.exec(e.target.value) == null) {
@@ -231,10 +229,11 @@ class Submit {
     static DEF_CL = "rgb(170, 170, 170)";
     static HOVER_CL = "rgb(150, 150, 150)";
     static CLICK_CL = "rgb(130, 130, 130)";
+    static DISABLED_CL = "rgb(43, 43, 43)";
 
     constructor(id=Submit.ID, equations=null) {
         this.__submitted = false;
-        this.__button = document.getElementById("submit");
+        this.__button = document.getElementById(id);
 
         this.__button.addEventListener("mouseover", (e) => {
             e.target.style.backgroundColor = Submit.HOVER_CL;
@@ -268,6 +267,9 @@ class Submit {
                 }
 
                 document.getElementById("score").innerText = correctAnswers;
+
+                e.target.style.backgroundColor = Submit.DISABLED_CL;
+                e.target.setAttribute("inert", "");
             }
         });
 
