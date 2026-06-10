@@ -186,20 +186,12 @@ class Exam {
                 let currentEq = this.__equations[i][c];
                 currentEq.playerAnswer = playerAnswer;
 
-                // const re = new RegExp("^-?[0-9]*.?[0-9]*$");
                 const re = /^(?![A-Za-z]|\s)+(-?[0-9]*)(.[0-9]*)?$/;
 
                 playerAnswer.addEventListener("input", (e) => {
-                    // TODO: add support for negative numbers
-                    // if (e.target.value.at(0) == "-" && e.target.value.length == 1) {
-                    // }
-                    console.log(re.exec(e.target.value));
                     if (re.exec(e.target.value) == null) {
                         e.target.value = e.target.value.slice(0, -1);
                     }
-                    // if (isNaN(e.target.value) || e.target.value.at(-1) == " ") {
-                    //     e.target.value = e.target.value.slice(0, -1);
-                    // }
                 });
 
                 playerAnswer.addEventListener("change", (e) => {
