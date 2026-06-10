@@ -90,6 +90,10 @@ class Exam {
         this.draw();
     }
 
+    get equations() {
+        return this.__equations;
+    }
+
     updateTotalEquationCount() {
         document.getElementById("total").innerText = this.__rows * this.__cols;
     }
@@ -229,8 +233,9 @@ class Submit {
     static HOVER_CL = "rgb(150, 150, 150)";
     static CLICK_CL = "rgb(130, 130, 130)";
 
-    constructor(id=Submit.ID) {
-        this.__button = document.getElementById(id);
+    constructor(id=Submit.ID, equations=null) {
+        this.__submitted = false;
+        this.__button = document.getElementById("submit");
 
         this.__button.addEventListener("mouseover", (e) => {
             e.target.style.backgroundColor = Submit.HOVER_CL;
@@ -244,6 +249,20 @@ class Submit {
             e.target.style.backgroundColor = Submit.CLICK_CL;
 
             // calculate total score
+            if (!this.__submitted) {
+                this.__submitted = true;
+
+                if (equations == null) {
+                    return;
+                }
+
+                let correctAnswers = 0;
+                for (let i = 0; i < equations.length; i++) {
+
+                }
+
+                document.getElementById("score").innerText = correctAnswers;
+            }
         });
 
         this.__button.addEventListener("mouseup", (e) => {
@@ -267,4 +286,4 @@ class Submit {
 
 let exam = new Exam();
 
-let submit = new Submit();
+let submit = new Submit(Submit.ID, exam.equations);
