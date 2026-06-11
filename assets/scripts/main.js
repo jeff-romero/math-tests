@@ -58,6 +58,23 @@ class Equation {
 }
 
 
+class Timer {
+    static ID = "timer";
+
+    constructor(id=Timer.ID) {
+        this.__timer = document.getElementById(id);
+
+        this.__timer.innerText = 0;
+
+        setInterval(() => {
+            this.__timer.innerText = parseInt(this.__timer.innerText) + 1;
+        }, 100);
+    }
+}
+
+let t = new Timer();
+
+
 class Exam {
     static MAX_ROWS = 10;
     static MAX_COLS = 10;
