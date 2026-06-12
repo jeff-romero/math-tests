@@ -53,22 +53,30 @@ class Equation {
                 break;
             default:
                 console.log(`Equation - ERROR: Unknown operator (${this.__operator})!`);
+                // default to addition
+                this.__operator = Exam.ADD;
+                this.calc();
+                break;
         }
     }
 }
 
 
 class Timer {
-    static ID = "timer";
+    static HR_ID = "hour";
+    static MIN_ID = "minute";
+    static SEC_ID = "second";
+    static MS_ID = "millisecond";
 
-    constructor(id=Timer.ID) {
-        this.__timer = document.getElementById(id);
+    constructor(hour_id=Timer.HR_ID, minute_id=Timer.MIN_ID, second_id=Timer.SEC_ID, millisecond_id=Timer.MS_ID) {
+        this.__hr = hour_id;
+        this.__min = minute_id;
+        this.__sec = second_id;
+        this.__ms = millisecond_id;
 
-        this.__timer.innerText = 0;
-
-        setInterval(() => {
-            this.__timer.innerText = parseInt(this.__timer.innerText) + 1;
-        }, 100);
+        // setInterval(() => {
+            // this.__timer.innerText = parseInt(this.__timer.innerText) + 1;
+        // }, 100);
     }
 }
 
