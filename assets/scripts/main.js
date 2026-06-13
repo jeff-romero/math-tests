@@ -69,14 +69,31 @@ class Timer {
     static MS_ID = "millisecond";
 
     constructor(hour_id=Timer.HR_ID, minute_id=Timer.MIN_ID, second_id=Timer.SEC_ID, millisecond_id=Timer.MS_ID) {
-        this.__hr = hour_id;
-        this.__min = minute_id;
-        this.__sec = second_id;
-        this.__ms = millisecond_id;
+        this.__hr = document.getElementById(hour_id);
+        this.__min = document.getElementById(minute_id);
+        this.__sec = document.getElementById(second_id);
+        this.__ms = document.getElementById(millisecond_id);
 
-        // setInterval(() => {
-            // this.__timer.innerText = parseInt(this.__timer.innerText) + 1;
-        // }, 100);
+        setInterval(() => {
+            if (parseInt(this.__ms.innerText) + 1 > 9) {
+                this.__sec.innerText = parseInt(this.__sec.innerText) + 1;
+                this.__ms.innerText = 0;
+            }
+            else {
+                this.__ms.innerText = parseInt(this.__ms.innerText) + 1;
+            }
+
+            if (parseInt(this.__sec.innerText) + 1 > 60) {
+                this.__min.innerText = parseInt(this.__min.innerText) + 1;
+                this.__sec.innerText = 0;
+            }
+
+            if (parseInt(this.__min.innerText) + 1 > 60) {
+                this.__hr.innerText = parseInt(this.__hr.innerText) + 1;
+                this.__min.innerText = 0;
+            }
+            
+        }, 100);
     }
 }
 
