@@ -74,9 +74,12 @@ class Timer {
         this.__sec = document.getElementById(second_id);
         this.__ms = document.getElementById(millisecond_id);
 
-        setInterval(() => {
+        let timer = setInterval(() => {
             if (parseInt(this.__ms.innerText) + 1 > 9) {
                 this.__sec.innerText = parseInt(this.__sec.innerText) + 1;
+                if (this.__sec.innerText < 10) {
+                    this.__sec.innerText = "0".concat(this.__sec.innerText);
+                }
                 this.__ms.innerText = 0;
             }
             else {
@@ -85,14 +88,23 @@ class Timer {
 
             if (parseInt(this.__sec.innerText) + 1 > 60) {
                 this.__min.innerText = parseInt(this.__min.innerText) + 1;
+                if (this.__min.innerText < 10) {
+                    this.__min.innerText = "0".concat(this.__min.innerText);
+                }
                 this.__sec.innerText = 0;
             }
 
             if (parseInt(this.__min.innerText) + 1 > 60) {
+                if (this.__hr.innerText + 1 > 99) {
+                    clearInterval(timer);
+                }
+
                 this.__hr.innerText = parseInt(this.__hr.innerText) + 1;
+                if (this.__hr.innerText < 10) {
+                    this.__hr.innerText = "0".concat(this.__hr.innerText);
+                }
                 this.__min.innerText = 0;
             }
-            
         }, 100);
     }
 }
