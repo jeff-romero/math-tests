@@ -73,6 +73,19 @@ class Timer {
         this.__min = document.getElementById(minute_id);
         this.__sec = document.getElementById(second_id);
         this.__ms = document.getElementById(millisecond_id);
+        this.__started = false;
+    }
+
+    get started() {
+        return this.__started;
+    }
+
+    start() {
+        if (this.__started) {
+            return;
+        }
+
+        this.__started = true;
 
         let timer = setInterval(() => {
             if (parseInt(this.__ms.innerText) + 1 > 9) {
@@ -109,8 +122,6 @@ class Timer {
     }
 }
 
-let t = new Timer();
-
 
 class Exam {
     static MAX_ROWS = 10;
@@ -132,6 +143,7 @@ class Exam {
         this.__operators = [];
         this.__operators.push(Exam.MULT);
         this.__showErrors = null;
+        this.__timer = new Timer();
 
         this.updateTotalEquationCount();
 
@@ -142,6 +154,13 @@ class Exam {
         this.initializePlayerAnswers();
 
         this.draw();
+
+        document.addEventListener("keydown", (event) => {
+            if (!this.__timer.started) {
+                console.log("starting");
+                this.__timer.start();
+            }
+        });
     }
 
     get equations() {
