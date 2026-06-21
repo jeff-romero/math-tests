@@ -77,15 +77,22 @@ class Timer {
         this.__ms = document.getElementById(millisecond_id);
         this.__started = false;
         this.__showTimerCheckbox = document.getElementById(show_timer_id);
+        
+        // always check on initialization, since an enabled box may persist after a page refresh
+        this.showTimerCheck();
 
         this.__showTimerCheckbox.addEventListener("change", (e) => {
-            if (this.__showTimerCheckbox.checked) {
-                document.getElementById(Timer.TIMER_WRAPPER).style.zIndex = 0;
-            }
-            else {
-                document.getElementById(Timer.TIMER_WRAPPER).style.zIndex = -1;
-            }
+            this.showTimerCheck();
         });
+    }
+
+    showTimerCheck() {
+        if (this.__showTimerCheckbox.checked) {
+            document.getElementById(Timer.TIMER_WRAPPER).style.zIndex = 0;
+        }
+        else {
+            document.getElementById(Timer.TIMER_WRAPPER).style.zIndex = -1;
+        }
     }
 
     get started() {
@@ -100,6 +107,10 @@ class Timer {
         this.__started = true;
 
         let timer = setInterval(() => {
+            if (!this.__started) {
+                clearInterval(timer);
+            }
+
             if (parseInt(this.__ms.innerText) + 1 > 9) {
                 this.__sec.innerText = parseInt(this.__sec.innerText) + 1;
                 if (this.__sec.innerText < 10) {
@@ -132,6 +143,10 @@ class Timer {
             }
         }, 100);
     }
+
+    stop() {
+        this.__started = false;
+    }
 }
 
 
@@ -145,17 +160,17 @@ class Exam {
     static MULT = "×";
     static DIV = "/";
 
-    constructor(rows=Exam.MAX_ROWS, cols=Exam.MAX_COLS, min=Exam.MIN_OPERAND, max=Exam.MAX_OPERAND) {
-        this.__rows = rows;
-        this.__cols = cols;
-        this.__min = min;
-        this.__max = max;
+    constructor(timer=null) {
+        this.__rows = Exam.MAX_ROWS;
+        this.__cols = Exam.MAX_COLS;
+        this.__min = Exam.MIN_OPERAND;
+        this.__max = Exam.MAX_OPERAND;
         this.__playerAnswers = [];
         this.__equations = [];
         this.__operators = [];
         this.__operators.push(Exam.MULT);
         this.__showErrors = null;
-        this.__timer = new Timer();
+        this.__timer = timer;
 
         this.updateTotalEquationCount();
 
@@ -168,6 +183,10 @@ class Exam {
         this.draw();
 
         document.addEventListener("keydown", (event) => {
+            if (this.__timer == null) {
+                return;
+            }
+
             if (!this.__timer.started) {
                 console.log("starting");
                 this.__timer.start();
@@ -316,9 +335,10 @@ class Submit {
     static CLICK_CL = "rgb(130, 130, 130)";
     static DISABLED_CL = "rgb(43, 43, 43)";
 
-    constructor(id=Submit.ID, equations=null) {
+    constructor(id=Submit.ID, equations=null, timer=null) {
         this.__submitted = false;
         this.__button = document.getElementById(id);
+        this.__timer = timer;
 
         this.__button.addEventListener("mouseover", (e) => {
             e.target.style.backgroundColor = Submit.HOVER_CL;
@@ -335,9 +355,11 @@ class Submit {
             if (!this.__submitted) {
                 this.__submitted = true;
 
-                if (equations == null) {
+                if (equations == null || this.__timer == null) {
                     return;
                 }
+
+                this.__timer.stop();
 
                 let correctAnswers = 0;
                 for (let r = 0; r < equations.length; r++) {
@@ -376,7 +398,8 @@ class Submit {
     }
 }
 
+let timer = new Timer();
 
-let exam = new Exam();
+let exam = new Exam(timer);
 
-let submit = new Submit(Submit.ID, exam.equations);
+let submit = new Submit(Submit.ID, exam.equations, timer);
