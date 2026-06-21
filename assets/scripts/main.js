@@ -67,13 +67,25 @@ class Timer {
     static MIN_ID = "minute";
     static SEC_ID = "second";
     static MS_ID = "millisecond";
+    static SHOW_TIMER_ID = "showTimer";
+    static TIMER_WRAPPER = "timerWrapper";
 
-    constructor(hour_id=Timer.HR_ID, minute_id=Timer.MIN_ID, second_id=Timer.SEC_ID, millisecond_id=Timer.MS_ID) {
+    constructor(hour_id=Timer.HR_ID, minute_id=Timer.MIN_ID, second_id=Timer.SEC_ID, millisecond_id=Timer.MS_ID, show_timer_id=Timer.SHOW_TIMER_ID) {
         this.__hr = document.getElementById(hour_id);
         this.__min = document.getElementById(minute_id);
         this.__sec = document.getElementById(second_id);
         this.__ms = document.getElementById(millisecond_id);
         this.__started = false;
+        this.__showTimerCheckbox = document.getElementById(show_timer_id);
+
+        this.__showTimerCheckbox.addEventListener("change", (e) => {
+            if (this.__showTimerCheckbox.checked) {
+                document.getElementById(Timer.TIMER_WRAPPER).style.zIndex = 0;
+            }
+            else {
+                document.getElementById(Timer.TIMER_WRAPPER).style.zIndex = -1;
+            }
+        });
     }
 
     get started() {
