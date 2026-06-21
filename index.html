@@ -7,15 +7,32 @@
     </head>
     <body id="root">
         <div id="top">
-            <div>
-                <input id="showErrors" type="checkbox">
-                <span>Show Errors</span>
+            <div id="checkboxWrapper">
+                <div>
+                    <input id="showTimer" type="checkbox"/>
+                    <span>Show Timer</span>
+                </div>
+                <div>
+                    <input id="showErrors" type="checkbox">
+                    <span>Show Errors</span>
+                </div>
             </div>
             <button id="submit">SUBMIT</button>
-            <div id="scoreWrapper">
-                <span id="score" class="scoreNum"></span>
-                <span>/</span>
-                <span id="total" class="scoreNum"></span>
+            <div id="timerScoreWrapper">
+                <div id="timerWrapper">
+                    <span id="hour">00</span>
+                    <span>:</span>
+                    <span id="minute">00</span>
+                    <span>:</span>
+                    <span id="second">00</span>
+                    <span>.</span>
+                    <span id="millisecond">0</span>
+                </div>
+                <div id="scoreWrapper">
+                    <span id="score" class="scoreNum"></span>
+                    <span>/</span>
+                    <span id="total" class="scoreNum"></span>
+                </div>
             </div>
         </div>
     </body>

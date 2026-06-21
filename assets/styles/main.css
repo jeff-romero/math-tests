@@ -28,11 +28,28 @@ body {
     align-items: center;
 }
 
+#checkboxWrapper {
+    display: flex;
+    justify-content: space-between;
+    width: 25%;
+}
+
 #submit {
     border: none;
     background-color: rgb(170, 170, 170);
     /* color: white; */
     padding: 0.5vw;
+    width: 10%;
+}
+
+#timerScoreWrapper {
+    display: flex;
+    justify-content: space-between;
+    width: 25%;
+}
+
+#timerWrapper {
+    z-index: -1;
 }
 
 #scoreWrapper {
