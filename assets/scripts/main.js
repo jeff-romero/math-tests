@@ -192,6 +192,18 @@ class Exam {
                 this.__timer.start();
             }
         });
+
+        window.addEventListener("resize", (event) => {
+            // console.log("resized");
+            // console.log(window.innerWidth);
+            // let root = document.getElementById("content");
+            // if (window.innerWidth >= 900) {
+            //     this.draw();
+            // }
+            // else {
+            //     this.drawMobileView();
+            // }
+        });
     }
 
     get equations() {
@@ -266,7 +278,11 @@ class Exam {
     }
 
     draw() {
-        let root = document.getElementById("root");
+        let root = document.getElementById("content");
+
+        while (root.firstChild) {
+            root.removeChild(root.firstChild);
+        }
 
         for (let i = 0; i < this.__equations.length; i++) {
             let row = document.createElement("div");
