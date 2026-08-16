@@ -74,6 +74,17 @@ class Timer {
         this.__sec = document.getElementById(second_id);
         this.__ms = document.getElementById(millisecond_id);
         this.__started = false;
+
+        let timerCheckbox = document.getElementById("showTimer");
+        let timer = document.getElementById("timerWrapper");
+        timerCheckbox.addEventListener("change", () => {
+            if (timerCheckbox.checked) {
+                timer.style.zIndex = 0;
+            }
+            else {
+                timer.style.zIndex = -1;
+            }
+        });
     }
 
     get started() {
