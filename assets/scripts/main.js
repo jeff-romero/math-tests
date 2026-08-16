@@ -155,12 +155,12 @@ class Exam {
 
         this.draw();
 
-        document.addEventListener("keydown", (event) => {
-            if (!this.__timer.started) {
-                console.log("starting");
-                this.__timer.start();
-            }
-        });
+        // document.addEventListener("keydown", (event) => {
+        //     if (!this.__timer.started) {
+        //         console.log("starting");
+        //         this.__timer.start();
+        //     }
+        // });
     }
 
     get equations() {
@@ -174,6 +174,7 @@ class Exam {
     createShowErrorHandler() {
         this.__showErrors = document.getElementById("showErrors");
 
+        // TODO: change
         this.__showErrors.addEventListener("change", () => {
             if (this.__equations.length == 0 || document.getElementById("score").innerText.length > 0) {
                 return;
@@ -198,6 +199,7 @@ class Exam {
     }
 
     initializeEquations() {
+        // TODO: change
         for (let r = 0; r < Exam.MAX_ROWS; r++) {
             let row = [];
 
@@ -223,6 +225,7 @@ class Exam {
     }
 
     initializePlayerAnswers() {
+        // TODO: change
         for (let r = 0; r < this.__rows; r++) {
             let paRow = [];
 
@@ -237,6 +240,7 @@ class Exam {
     draw() {
         let root = document.getElementById("root");
 
+        // TODO: change
         for (let i = 0; i < this.__equations.length; i++) {
             let row = document.createElement("div");
             row.className = "row";
@@ -266,6 +270,10 @@ class Exam {
                 });
 
                 playerAnswer.addEventListener("change", (e) => {
+                    if (!this.__timer.started) {
+                        this.__timer.start();
+                    }
+
                     if (this.__showErrors.checked) {
                         if (e.target.value.length > 0 && e.target.value != currentEq.answer) {
                             e.target.style.backgroundColor = "red";
@@ -327,6 +335,7 @@ class Submit {
                     return;
                 }
 
+                // TODO: change
                 let correctAnswers = 0;
                 for (let r = 0; r < equations.length; r++) {
                     for (let c = 0; c < equations[r].length; c++) {
