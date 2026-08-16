@@ -271,7 +271,7 @@ class Exam {
 
                 playerAnswer.addEventListener("change", (e) => {
                     if (!this.__timer.started) {
-                        this.__timer.start();
+                        this.__timer.start()
                     }
 
                     if (this.__showErrors.checked) {

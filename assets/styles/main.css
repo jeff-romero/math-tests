@@ -48,10 +48,8 @@ body {
     width: 25%;
 }
 
-#timer {
-    display: flex;
-    border: none;
-    /* background-color: grey; */
+#timerWrapper {
+    z-index: -1;
 }
 
 #scoreWrapper {
