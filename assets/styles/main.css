@@ -9,14 +9,14 @@
 }
 
 body {
-    min-height: 100vh;
+    height: 100dvh;
     /* background-color: red; */
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    /* justify-content: space-between; */
     /* align-items: center; */
-    gap: 1vw;
-    flex: 1 1 0;
+    /* gap: 1vw; */
+    /* flex: 1 1 0; */
 }
 
 #top {
@@ -106,4 +106,15 @@ body {
 
 hr {
     width: 100%;
+}
+
+#bottom {
+    /* display: flex; */
+    /* background-color: red; */
+    height: 100dvh;
+    width: 100%;
+    gap: 1vw;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    /* grid-column: 1; */
 }
