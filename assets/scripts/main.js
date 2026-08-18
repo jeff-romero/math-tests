@@ -77,6 +77,12 @@ class Timer {
 
         let timerCheckbox = document.getElementById("showTimer");
         let timer = document.getElementById("timerWrapper");
+
+        // checkbox can already be checked if user refreshes the page (not force reload)
+        if (timerCheckbox.checked) {
+            timer.style.zIndex = 0;
+        }
+
         timerCheckbox.addEventListener("change", () => {
             if (timerCheckbox.checked) {
                 timer.style.zIndex = 0;
