@@ -67,32 +67,30 @@ class Timer {
     static MIN_ID = "minute";
     static SEC_ID = "second";
     static MS_ID = "millisecond";
-    static SHOW_TIMER_ID = "showTimer";
-    static TIMER_WRAPPER = "timerWrapper";
 
-    constructor(hour_id=Timer.HR_ID, minute_id=Timer.MIN_ID, second_id=Timer.SEC_ID, millisecond_id=Timer.MS_ID, show_timer_id=Timer.SHOW_TIMER_ID) {
+    constructor(hour_id=Timer.HR_ID, minute_id=Timer.MIN_ID, second_id=Timer.SEC_ID, millisecond_id=Timer.MS_ID) {
         this.__hr = document.getElementById(hour_id);
         this.__min = document.getElementById(minute_id);
         this.__sec = document.getElementById(second_id);
         this.__ms = document.getElementById(millisecond_id);
         this.__started = false;
-        this.__showTimerCheckbox = document.getElementById(show_timer_id);
-        
-        // always check on initialization, since an enabled box may persist after a page refresh
-        this.showTimerCheck();
 
-        this.__showTimerCheckbox.addEventListener("change", (e) => {
-            this.showTimerCheck();
+        let timerCheckbox = document.getElementById("showTimer");
+        let timer = document.getElementById("timerWrapper");
+
+        // checkbox can already be checked if user refreshes the page (not force reload)
+        if (timerCheckbox.checked) {
+            timer.style.zIndex = 0;
+        }
+
+        timerCheckbox.addEventListener("change", () => {
+            if (timerCheckbox.checked) {
+                timer.style.zIndex = 0;
+            }
+            else {
+                timer.style.zIndex = -1;
+            }
         });
-    }
-
-    showTimerCheck() {
-        if (this.__showTimerCheckbox.checked) {
-            document.getElementById(Timer.TIMER_WRAPPER).style.zIndex = 0;
-        }
-        else {
-            document.getElementById(Timer.TIMER_WRAPPER).style.zIndex = -1;
-        }
     }
 
     get started() {
@@ -107,10 +105,6 @@ class Timer {
         this.__started = true;
 
         let timer = setInterval(() => {
-            if (!this.__started) {
-                clearInterval(timer);
-            }
-
             if (parseInt(this.__ms.innerText) + 1 > 9) {
                 this.__sec.innerText = parseInt(this.__sec.innerText) + 1;
                 if (this.__sec.innerText < 10) {
@@ -143,16 +137,11 @@ class Timer {
             }
         }, 100);
     }
-
-    stop() {
-        this.__started = false;
-    }
 }
 
 
 class Exam {
-    static MAX_ROWS = 10;
-    static MAX_COLS = 10;
+    static DEFAULT_TOTAL_EQUATIONS = 100;
     static MIN_OPERAND = 1;
     static MAX_OPERAND = 12;
     static ADD = "+";
@@ -160,38 +149,24 @@ class Exam {
     static MULT = "×";
     static DIV = "/";
 
-    constructor(timer=null) {
-        this.__rows = Exam.MAX_ROWS;
-        this.__cols = Exam.MAX_COLS;
-        this.__min = Exam.MIN_OPERAND;
-        this.__max = Exam.MAX_OPERAND;
+    constructor(min=Exam.MIN_OPERAND, max=Exam.MAX_OPERAND, totalEquations=Exam.DEFAULT_TOTAL_EQUATIONS) {
+        this.__totalEquations = totalEquations;
+        this.__min = min;
+        this.__max = max;
         this.__playerAnswers = [];
         this.__equations = [];
-        this.__operators = [];
-        this.__operators.push(Exam.MULT);
+        // TODO: add more operators
+        this.__operators = [Exam.MULT];
         this.__showErrors = null;
-        this.__timer = timer;
+        this.__timer = new Timer();
 
         this.updateTotalEquationCount();
 
+        this.initializeBackEndEquations();
+
+        this.initializeFrontEndEquations();
+
         this.createShowErrorHandler();
-
-        this.initializeEquations();
-
-        this.initializePlayerAnswers();
-
-        this.draw();
-
-        document.addEventListener("keydown", (event) => {
-            if (this.__timer == null) {
-                return;
-            }
-
-            if (!this.__timer.started) {
-                console.log("starting");
-                this.__timer.start();
-            }
-        });
     }
 
     get equations() {
@@ -199,7 +174,7 @@ class Exam {
     }
 
     updateTotalEquationCount() {
-        document.getElementById("total").innerText = this.__rows * this.__cols;
+        document.getElementById("total").innerText = this.__totalEquations;
     }
 
     createShowErrorHandler() {
@@ -210,119 +185,95 @@ class Exam {
                 return;
             }
 
-            for (let r = 0; r < this.__rows; r++) {
-                for (let c = 0; c < this.__cols; c++) {
-                    let currentEq = this.__equations[r][c];
-                    if (!currentEq || !currentEq.playerAnswer) {
-                        continue;
-                    }
+            for (let i = 0; i < this.__totalEquations; i++) {
+                let currentEquation = this.__equations[i];
 
-                    if (this.__showErrors.checked && currentEq.playerAnswer.value.length > 0 && currentEq.answer != currentEq.playerAnswer.value) {
-                        currentEq.playerAnswer.style.backgroundColor = "red";
-                    }
-                    else {
-                        currentEq.playerAnswer.style.backgroundColor = "white";
-                    }
+                if (!currentEquation || !currentEquation.playerAnswer) {
+                    continue;
+                }
+
+                if (this.__showErrors.checked && currentEquation.playerAnswer.value.length > 0 && currentEquation.answer != currentEquation.playerAnswer.value) {
+                    currentEquation.playerAnswer.style.backgroundColor = "red";
+                }
+                else {
+                    currentEquation.playerAnswer.style.backgroundColor = "white";
                 }
             }
         });
     }
 
-    initializeEquations() {
-        for (let r = 0; r < Exam.MAX_ROWS; r++) {
-            let row = [];
-
-            for (let c = 0; c < Exam.MAX_COLS; c++) {
-                let equation = this.createEquation();
-                row.push(equation);
-            }
-
-            this.__equations.push(row);
+    initializeBackEndEquations() {
+        for (let i = 0; i < this.__totalEquations; i++) {
+            this.__equations.push(this.createEquation());
         }
     }
 
     createEquation() {
         let numerator = Math.floor((Math.random() * this.__max) + this.__min);
         let denominator = Math.floor((Math.random() * this.__max) + this.__min);
-        let operator = this.__operators[0];
-
-        if (this.__operators.length > 1) {
-            operator = this.__operators[Math.floor(Math.random() * this.__operators.length)];
-        }
+        let operator = this.__operators[Math.floor(Math.random() * this.__operators.length)];
 
         return new Equation(numerator, denominator, operator);
     }
 
-    initializePlayerAnswers() {
-        for (let r = 0; r < this.__rows; r++) {
-            let paRow = [];
-
-            for (let c = 0; c < this.__cols; c++) {
-                paRow.push(0);
-            }
-
-            this.__playerAnswers.push(paRow);
-        }
-    }
-
-    draw() {
-        let root = document.getElementById("root");
+    initializeFrontEndEquations() {
+        let root = document.getElementById("bottom");
+        const realNumbersPattern = /^(?=[-0-9.])+(-?[0-9]*)(.[0-9]*)?$/;
 
         for (let i = 0; i < this.__equations.length; i++) {
-            let row = document.createElement("div");
-            row.className = "row";
+            let equation = document.createElement("div");
+            equation.className = "equation";
 
-            for (let c = 0; c < this.__equations[i].length; c++) {
-                let equation = document.createElement("div");
-                equation.className = "equation";
+            let numerator = document.createElement("span");
 
-                let numerator = document.createElement("span");
-                let denominatorWrapper = document.createElement("div");
-                denominatorWrapper.className = "denominatorWrapper";
-                let denominator = document.createElement("span");
-                let operator = document.createElement("span");
-                let hr = document.createElement("hr");
-                let playerAnswer = document.createElement("input");
-                playerAnswer.className = "playerAnswer";
+            let denominatorWrapper = document.createElement("div");
+            denominatorWrapper.className = "denominatorWrapper";
+            let denominator = document.createElement("span");
 
-                let currentEq = this.__equations[i][c];
-                currentEq.playerAnswer = playerAnswer;
+            let operator = document.createElement("span");
 
-                const re = /^(?=[-0-9.])+(-?[0-9]*)(.[0-9]*)?$/;
+            let hr = document.createElement("hr");
 
-                playerAnswer.addEventListener("input", (e) => {
-                    if (re.exec(e.target.value) == null) {
-                        e.target.value = e.target.value.slice(0, -1);
+            let playerAnswer = document.createElement("input");
+            playerAnswer.className = "playerAnswer";
+
+            let currentEq = this.__equations[i];
+            currentEq.playerAnswer = playerAnswer;
+
+            playerAnswer.addEventListener("input", (e) => {
+                if (realNumbersPattern.exec(e.target.value) == null) {
+                    e.target.value = e.target.value.slice(0, -1);
+                }
+            });
+
+            playerAnswer.addEventListener("change", (e) => {
+                if (!this.__timer.started) {
+                    this.__timer.start()
+                }
+
+                if (this.__showErrors.checked) {
+                    if (e.target.value.length > 0 && e.target.value != currentEq.answer) {
+                        e.target.style.backgroundColor = "red";
                     }
-                });
-
-                playerAnswer.addEventListener("change", (e) => {
-                    if (this.__showErrors.checked) {
-                        if (e.target.value.length > 0 && e.target.value != currentEq.answer) {
-                            e.target.style.backgroundColor = "red";
-                        }
-                        else if (e.target.style.backgroundColor != "white") {
-                            e.target.style.backgroundColor = "white";
-                        }
+                    else if (e.target.style.backgroundColor != "white") {
+                        e.target.style.backgroundColor = "white";
                     }
-                });
+                }
+            });
 
-                numerator.innerText = currentEq.numerator;
-                operator.innerText = currentEq.operator;
-                denominator.innerText = currentEq.denominator;
+            numerator.innerText = currentEq.numerator;
+            operator.innerText = currentEq.operator;
+            denominator.innerText = currentEq.denominator;
 
-                denominatorWrapper.appendChild(operator);
-                denominatorWrapper.appendChild(denominator);
+            denominatorWrapper.appendChild(operator);
+            denominatorWrapper.appendChild(denominator);
 
-                equation.appendChild(numerator);
-                equation.appendChild(denominatorWrapper);
-                equation.appendChild(hr);
-                equation.appendChild(playerAnswer);
+            equation.appendChild(numerator);
+            equation.appendChild(denominatorWrapper);
+            equation.appendChild(hr);
+            equation.appendChild(playerAnswer);
 
-                row.appendChild(equation);
-            }
-
-            root.appendChild(row);
+            root.appendChild(equation);
         }
     }
 }
@@ -335,10 +286,9 @@ class Submit {
     static CLICK_CL = "rgb(130, 130, 130)";
     static DISABLED_CL = "rgb(43, 43, 43)";
 
-    constructor(id=Submit.ID, equations=null, timer=null) {
+    constructor(id=Submit.ID, equations=null) {
         this.__submitted = false;
         this.__button = document.getElementById(id);
-        this.__timer = timer;
 
         this.__button.addEventListener("mouseover", (e) => {
             e.target.style.backgroundColor = Submit.HOVER_CL;
@@ -355,21 +305,17 @@ class Submit {
             if (!this.__submitted) {
                 this.__submitted = true;
 
-                if (equations == null || this.__timer == null) {
+                if (equations == null) {
                     return;
                 }
 
-                this.__timer.stop();
-
                 let correctAnswers = 0;
-                for (let r = 0; r < equations.length; r++) {
-                    for (let c = 0; c < equations[r].length; c++) {
-                        if (equations[r][c].answer == equations[r][c].playerAnswer.value) {
-                            correctAnswers++;
-                        }
-                        else {
-                            equations[r][c].playerAnswer.style.backgroundColor = "red";
-                        }
+                for (let i = 0; i < equations.length; i++) {
+                    if (equations[i].answer == equations[i].playerAnswer.value) {
+                        correctAnswers++;
+                    }
+                    else {
+                        equations[i].playerAnswer.style.backgroundColor = "red";
                     }
                 }
 
@@ -398,8 +344,7 @@ class Submit {
     }
 }
 
-let timer = new Timer();
 
-let exam = new Exam(timer);
+let exam = new Exam();
 
-let submit = new Submit(Submit.ID, exam.equations, timer);
+let submit = new Submit(Submit.ID, exam.equations);
