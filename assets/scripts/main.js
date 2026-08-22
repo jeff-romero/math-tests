@@ -401,6 +401,8 @@ class Controller {
     };
 
     constructor(exam) {
+        this.exam = exam;
+
         this.toggleSettings = document.getElementById("toggleSettings");
         this.settings = document.getElementById("settings");
         this.settings.style.display = getComputedStyle(this.settings).display;
@@ -522,21 +524,23 @@ class Controller {
     }
 
     initializeDefaultOperator() {
-        switch (Controller.DEFAULT_OPERATOR) {
-            case Exam.ADD:
-                this.addCheckbox.checked = true;
-                break;
-            case Exam.SUB:
-                this.subCheckbox.checked = true;
-                break;
-            case Exam.MULT:
-                this.mulCheckbox.checked = true;
-                break;
-            case Exam.DIV:
-                this.divCheckbox.checked = true;
-                break;
-            default:
-                break;
+        for (let i = 0; i < this.exam.__operators.length; i++) {
+            switch (this.exam.__operators[i]) {
+                case Exam.ADD:
+                    this.addCheckbox.checked = true;
+                    break;
+                case Exam.SUB:
+                    this.subCheckbox.checked = true;
+                    break;
+                case Exam.MULT:
+                    this.mulCheckbox.checked = true;
+                    break;
+                case Exam.DIV:
+                    this.divCheckbox.checked = true;
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
