@@ -4,9 +4,13 @@
         <title>Math tests</title>
         <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1"/>
         <link rel="stylesheet" type="text/css" href="assets/styles/main.css"/>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     </head>
     <body id="root">
         <div id="top">
+            <div class="settingsWrapper">
+                <i id="toggleSettings" class="material-icons">&#xe8b8</i>
+            </div>
             <div id="checkboxWrapper">
                 <div>
                     <input id="showTimer" type="checkbox"/>
@@ -32,6 +36,36 @@
                     <span id="score" class="scoreNum"></span>
                     <span>/</span>
                     <span id="total" class="scoreNum"></span>
+                </div>
+            </div>
+            <div class="settingsWrapper">
+                <i class="material-icons invisibleButton">&#xe8b8</i>
+            </div>
+        </div>
+        <div id="settings">
+            <div class="windowTop">
+                <div id="close" class="closeButton">&#x2715</div>
+            </div>
+            <div class="windowContent">
+                <button id="apply">APPLY</button>
+                <div class="settingsGroup">
+                    <h3 class="settingsHeader">Operators</h3>
+                    <div class="checkboxGroup">
+                        <input id="addCheckbox" type="checkbox">
+                        <span>Addition</span>
+                    </div>
+                    <div class="checkboxGroup">
+                        <input id="subCheckbox" type="checkbox">
+                        <span>Subtraction</span>
+                    </div>
+                    <div class="checkboxGroup">
+                        <input id="mulCheckbox" type="checkbox">
+                        <span>Multiplication</span>
+                    </div>
+                    <div class="checkboxGroup">
+                        <input id="divCheckbox" type="checkbox">
+                        <span>Division</span>
+                    </div>
                 </div>
             </div>
         </div>

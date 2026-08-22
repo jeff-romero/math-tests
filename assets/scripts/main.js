@@ -144,6 +144,7 @@ class Exam {
     static DEFAULT_TOTAL_EQUATIONS = 100;
     static MIN_OPERAND = 1;
     static MAX_OPERAND = 12;
+    static MAX_DIV_NUMERATOR = 144;
     static ADD = "+";
     static SUB = "-";
     static MULT = "×";
@@ -156,7 +157,7 @@ class Exam {
         this.__playerAnswers = [];
         this.__equations = [];
         // TODO: add more operators
-        this.__operators = [Exam.MULT];
+        this.__operators = [Exam.DIV];
         this.__showErrors = null;
         this.__timer = new Timer();
 
@@ -167,6 +168,10 @@ class Exam {
         this.initializeFrontEndEquations();
 
         this.createShowErrorHandler();
+    }
+
+    restart() {
+        console.log("restarting exam...");
     }
 
     get equations() {
@@ -209,9 +214,30 @@ class Exam {
     }
 
     createEquation() {
-        let numerator = Math.floor((Math.random() * this.__max) + this.__min);
-        let denominator = Math.floor((Math.random() * this.__max) + this.__min);
         let operator = this.__operators[Math.floor(Math.random() * this.__operators.length)];
+        let numerator;
+
+        if (operator == Exam.DIV) {
+            numerator = Math.floor((Math.random() * Exam.MAX_DIV_NUMERATOR) + this.__min);
+        }
+        else {
+            numerator = Math.floor((Math.random() * this.__max) + this.__min);
+        }
+        
+        let denominator = Math.floor((Math.random() * this.__max) + this.__min);
+
+        if (operator == Exam.DIV) {
+            while (true) {
+                let answer = numerator / denominator;
+                
+                if (denominator <= numerator && answer % 1 == 0) {
+                    break;
+                }
+
+                numerator = Math.floor((Math.random() * Exam.MAX_DIV_NUMERATOR) + this.__min);
+                denominator = Math.floor((Math.random() * this.__max) + this.__min);
+            }
+        }
 
         return new Equation(numerator, denominator, operator);
     }
@@ -345,6 +371,244 @@ class Submit {
 }
 
 
+class Controller {
+    static DEFAULT_OPERATOR = Exam.MULT;
+    static SETTINGS_BTN_COLORS = {
+        "mouseover": "",
+        "mouseleave": "",
+        "mousedown": "",
+        "mouseup": "",
+        "touchstart": "",
+        "touchend": ""
+    };
+    static CLOSE_BTN_COLORS = {
+        "mouseover": "#E81123",
+        "mouseleave": "#383838",
+        "mousedown": "#F16F7A",
+        "mouseup": "#E81123",
+        "touchstart": "#F16F7A",
+        "touchend": "#383838"
+    };
+    static APPLY_BTN_COLORS = {
+        "inert": "#cccccc80",
+        "active": "#cccccc",
+        "mouseover": "#868686",
+        "mouseleave": "#cccccc",
+        "mousedown": "#464646",
+        "mouseup": "#868686",
+        "touchstart": "#464646",
+        "touchend": "#cccccc"
+    };
+
+    constructor(exam) {
+        this.toggleSettings = document.getElementById("toggleSettings");
+        this.settings = document.getElementById("settings");
+        this.settings.style.display = getComputedStyle(this.settings).display;
+        this.close = document.getElementById("close");
+        this.apply = document.getElementById("apply");
+
+        this.addCheckbox = document.getElementById("addCheckbox");
+        this.subCheckbox = document.getElementById("subCheckbox");
+        this.mulCheckbox = document.getElementById("mulCheckbox");
+        this.divCheckbox = document.getElementById("divCheckbox");
+
+        this.handleSettingsButton();
+
+        this.initializeCloseButtonStyling();
+
+        this.disableApplyButton();
+
+        this.initializeApplyButtonStyling();
+
+        this.initializeDefaultOperator();
+
+        this.handleOperatorCheckboxes();
+
+        this.handleApplySettings();
+    }
+
+    handleSettingsButton() {
+        this.toggleSettings.addEventListener("mouseover", (e) => {
+
+        });
+
+        this.toggleSettings.addEventListener("mouseleave", (e) => {
+
+        });
+
+        this.toggleSettings.addEventListener("mousedown", (e) => {
+
+        });
+
+        this.toggleSettings.addEventListener("mouseup", (e) => {
+            if (this.settings.style.display == "none") {
+                this.settings.style.display = "flex";
+            }
+            else {
+                this.settings.style.display = "none";
+            }
+        });
+
+        this.toggleSettings.addEventListener("touchstart", (e) => {
+
+        });
+
+        this.toggleSettings.addEventListener("touchend", (e) => {
+            if (this.settings.style.display == "none") {
+                this.settings.style.display = "flex";
+            }
+            else {
+                this.settings.style.display = "none";
+            }
+        });
+    }
+
+    initializeCloseButtonStyling() {
+        this.close.addEventListener("mouseover", (e) => {
+            e.target.style.backgroundColor = Controller.CLOSE_BTN_COLORS["mouseover"];
+        });
+
+        this.close.addEventListener("mouseleave", (e) => {
+            e.target.style.backgroundColor = Controller.CLOSE_BTN_COLORS["mouseleave"];
+        });
+
+        this.close.addEventListener("mousedown", (e) => {
+            e.target.style.backgroundColor = Controller.CLOSE_BTN_COLORS["mousedown"];
+        });
+
+        this.close.addEventListener("mouseup", (e) => {
+            e.target.style.backgroundColor = Controller.CLOSE_BTN_COLORS["mouseup"];
+            this.settings.style.display = "none";
+        });
+
+        this.close.addEventListener("touchstart", (e) => {
+            e.target.style.backgroundColor = Controller.CLOSE_BTN_COLORS["touchstart"];
+        });
+
+        this.close.addEventListener("touchend", (e) => {
+            e.target.style.backgroundColor = Controller.CLOSE_BTN_COLORS["touchend"];
+            this.settings.style.display = "none";
+        });
+    }
+
+    initializeApplyButtonStyling() {
+        this.apply.addEventListener("mouseover", (e) => {
+            e.target.style.backgroundColor = Controller.APPLY_BTN_COLORS["mouseover"];
+        });
+
+        this.apply.addEventListener("mouseleave", (e) => {
+            e.target.style.backgroundColor = Controller.APPLY_BTN_COLORS["mouseleave"];
+        });
+
+        this.apply.addEventListener("mousedown", (e) => {
+            e.target.style.backgroundColor = Controller.APPLY_BTN_COLORS["mousedown"];
+        });
+
+        this.apply.addEventListener("mouseup", (e) => {
+            e.target.style.backgroundColor = Controller.APPLY_BTN_COLORS["mouseup"];
+
+            this.disableApplyButton();
+        });
+
+        this.apply.addEventListener("touchstart", (e) => {
+            e.target.style.backgroundColor = Controller.APPLY_BTN_COLORS["touchstart"];
+        });
+
+        this.apply.addEventListener("touchend", (e) => {
+            e.target.style.backgroundColor = Controller.APPLY_BTN_COLORS["touchend"];
+
+            this.disableApplyButton();
+        });
+    }
+
+    initializeDefaultOperator() {
+        switch (Controller.DEFAULT_OPERATOR) {
+            case Exam.ADD:
+                this.addCheckbox.checked = true;
+                break;
+            case Exam.SUB:
+                this.subCheckbox.checked = true;
+                break;
+            case Exam.MULT:
+                this.mulCheckbox.checked = true;
+                break;
+            case Exam.DIV:
+                this.divCheckbox.checked = true;
+                break;
+            default:
+                break;
+        }
+    }
+
+    disableApplyButton() {
+        this.apply.style.backgroundColor = Controller.APPLY_BTN_COLORS["inert"];
+        this.apply.setAttribute("inert", "");
+    }
+
+    enableApplyButton() {
+        if (this.apply.attributes.getNamedItem("inert")) {
+            this.apply.removeAttribute("inert");
+
+            this.apply.style.backgroundColor = Controller.APPLY_BTN_COLORS["active"];
+        }
+    }
+
+    handleOperatorCheckboxes() {
+        this.addCheckbox.addEventListener("change", (e) => {
+            this.enableApplyButton();
+
+            if (e.target.checked) {
+
+            }
+            else {
+
+            }
+        });
+
+        this.subCheckbox.addEventListener("change", (e) => {
+            this.enableApplyButton();
+
+            if (e.target.checked) {
+
+            }
+            else {
+                
+            }
+        });
+
+        this.mulCheckbox.addEventListener("change", (e) => {
+            this.enableApplyButton();
+
+            if (e.target.checked) {
+
+            }
+            else {
+                
+            }
+        });
+
+        this.divCheckbox.addEventListener("change", (e) => {
+            this.enableApplyButton();
+
+            if (e.target.checked) {
+
+            }
+            else {
+                
+            }
+        });
+    }
+
+    handleApplySettings() {
+        this.apply.addEventListener("click", (e) => {
+            e.target.setAttribute("intert", "");
+        });
+    }
+}
+
+
 let exam = new Exam();
 
 let submit = new Submit(Submit.ID, exam.equations);
+
+let controller = new Controller(exam);
