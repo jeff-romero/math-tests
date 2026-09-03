@@ -154,7 +154,6 @@ class Exam {
         this.__totalEquations = totalEquations;
         this.__min = min;
         this.__max = max;
-        this.__playerAnswers = [];
         this.__equations = [];
         // TODO: add more operators
         this.__operators = [Exam.DIV];
@@ -170,12 +169,40 @@ class Exam {
         this.createShowErrorHandler();
     }
 
-    restart() {
+    restart(operators) {
         console.log("restarting exam...");
+
+        while (this.__equations.length > 0) {
+            this.__equations.pop();
+        }
+
+        this.updateSelectedOperators(operators);
+
+        // this.updateTotalEquationCount();
+
+        this.initializeBackEndEquations();
+
+        this.initializeFrontEndEquations();
+
+        this.createShowErrorHandler();
     }
 
     get equations() {
         return this.__equations;
+    }
+
+    updateSelectedOperators(operators) {
+        if (operators === undefined || operators.length == 0) {
+            return;
+        }
+
+        while (this.__operators.length > 0) {
+            this.__operators.pop();
+        }
+
+        for (let i = 0; i < operators.length; i++) {
+            this.__operators.push(operators[i]);
+        }
     }
 
     updateTotalEquationCount() {
@@ -216,6 +243,7 @@ class Exam {
     createEquation() {
         let operator = this.__operators[Math.floor(Math.random() * this.__operators.length)];
         let numerator;
+        let denominator;
 
         if (operator == Exam.DIV) {
             numerator = Math.floor((Math.random() * Exam.MAX_DIV_NUMERATOR) + this.__min);
@@ -223,19 +251,19 @@ class Exam {
         else {
             numerator = Math.floor((Math.random() * this.__max) + this.__min);
         }
-        
-        let denominator = Math.floor((Math.random() * this.__max) + this.__min);
+
+        denominator = Math.floor((Math.random() * this.__max) + this.__min);
 
         if (operator == Exam.DIV) {
             while (true) {
                 let answer = numerator / denominator;
                 
-                if (denominator <= numerator && answer % 1 == 0) {
+                if (denominator < numerator && answer % 1 == 0) {
                     break;
                 }
 
                 numerator = Math.floor((Math.random() * Exam.MAX_DIV_NUMERATOR) + this.__min);
-                denominator = Math.floor((Math.random() * this.__max) + this.__min);
+                denominator = Math.floor((Math.random() * (Exam.MAX_DIV_NUMERATOR - 1)) + this.__min);
             }
         }
 
@@ -244,6 +272,11 @@ class Exam {
 
     initializeFrontEndEquations() {
         let root = document.getElementById("bottom");
+
+        while (root.firstChild) {
+            root.removeChild(root.firstChild);
+        }
+
         const realNumbersPattern = /^(?=[-0-9.])+(-?[0-9]*)(.[0-9]*)?$/;
 
         for (let i = 0; i < this.__equations.length; i++) {
@@ -605,8 +638,34 @@ class Controller {
 
     handleApplySettings() {
         this.apply.addEventListener("click", (e) => {
-            e.target.setAttribute("intert", "");
+            e.target.setAttribute("inert", "");
         });
+    }
+
+    restart() {
+        let operators = [];
+
+        if (this.addCheckbox.checked) {
+            console.log('add checked');
+            operators.push(Exam.ADD);
+        }
+
+        if (this.subCheckbox.checked) {
+            console.log('sub checked');
+            operators.push(Exam.SUB);
+        }
+
+        if (this.mulCheckbox.checked) {
+            console.log('mul checked');
+            operators.push(Exam.MULT);
+        }
+
+        if (this.divCheckbox.checked) {
+            console.log('div checked');
+            operators.push(Exam.DIV);
+        }
+
+        this.exam.restart(operators);
     }
 }
 

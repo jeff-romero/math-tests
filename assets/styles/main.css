@@ -42,7 +42,12 @@ body {
     line-height: 1.5rem;
     user-select: none;
     color: black;
+    cursor: pointer;
 }
+
+/* .settingsWrapper:hover {
+    color: oklch(39.793% 0.00005 271.152);
+} */
 
 #checkboxWrapper {
     /* flex: 1; */
@@ -70,6 +75,10 @@ button {
     /* color: white; */
     padding: 0.5vw;
     /* width: 10%; */
+}
+
+#submit:hover {
+    cursor: pointer;
 }
 
 #timerScoreWrapper {
@@ -180,6 +189,8 @@ hr {
 
 #settings {
     position: absolute;
+    align-self: center;
+    top: 25%;
     z-index: 1;
     display: none;
     flex-direction: column;
@@ -191,6 +202,10 @@ hr {
     background-color: rgb(204, 204, 204);
     padding: 0.75rem;
     width: 75%;
+}
+
+#apply:hover {
+    cursor: pointer;
 }
 
 .settingsGroup {
