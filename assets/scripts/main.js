@@ -472,23 +472,6 @@ class Controller {
         });
 
         this.toggleSettings.addEventListener("mousedown", (e) => {
-
-        });
-
-        this.toggleSettings.addEventListener("mouseup", (e) => {
-            if (this.settings.style.display == "none") {
-                this.settings.style.display = "flex";
-            }
-            else {
-                this.settings.style.display = "none";
-            }
-        });
-
-        this.toggleSettings.addEventListener("touchstart", (e) => {
-
-        });
-
-        this.toggleSettings.addEventListener("touchend", (e) => {
             if (this.settings.style.display == "none") {
                 this.settings.style.display = "flex";
             }
